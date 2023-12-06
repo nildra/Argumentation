@@ -1,10 +1,10 @@
 class Argument:
-    def __init_(self,nom):
+    def __init__(self,nom):
         self.nom =nom
     
 
 class Graphe:
     def __init__(self, arguments, relations):
         self.arguments=arguments
-        self;relations=relations
-        
+        self.relations=relations
+
