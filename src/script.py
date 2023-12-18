@@ -29,4 +29,4 @@ g = Graphe(arguments,atk)
 #print(complete(g))
 #print(find_conflict_free_subsets(g))
 
-print(isAdmissible(g))
+print(admissibles(g))
