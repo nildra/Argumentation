@@ -18,9 +18,9 @@ def grounded(graphe: Graphe):
                     liste.append(x2)
 
     return liste
-arg =  ['A', 'B', 'C', 'D', 'E'] 
-relation=[('A', 'B'), ('B', 'A'), ('A', 'C'), ('B', 'C'), ('C', 'D'), ('D', 'E')]
+# arg =  ['A', 'B', 'C', 'D', 'E'] 
+# relation=[('A', 'B'), ('B', 'A'), ('A', 'C'), ('B', 'C'), ('C', 'D'), ('D', 'E')]
 
-g = Graphe(arg,relation)
-print(grounded(g))
+# g = Graphe(arg,relation)
+# print(grounded(g))
 
