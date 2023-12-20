@@ -6,7 +6,8 @@ import os
 import sys
 
 from graphe import Graphe
-from extension import *
+from complete import *
+from stable import *
 
 def read_file(name):
     liste_arg=[]
@@ -20,13 +21,16 @@ def read_file(name):
                 liste_att.append((l[4], l[6]))       
         return liste_arg, liste_att
 
-
-arguments, atk = read_file(os.path.join(os.getcwd(), "..", "dossier_test", sys.argv[1])) #commande pr exec : "python3 script.py fichierTest.apx"
+arguments, atk = read_file(os.path.join(os.getcwd(), "..", "dossier_test", sys.argv[1]))
 #print(os.path.join(os.getcwd(), "..", "dossier_test", "test_af1.apx"))
 #print(arguments, atk)
 
 g = Graphe(arguments,atk)
-#print(complete(g))
-#print(find_conflict_free_subsets(g))
 
-print(admissibles(g))
+#print(complete(g))
+print(f"#sans conflit : {conflict_free_subsets(g)}")
+res = []
+for e in g.arguments:
+        res.append(defends(e, g))
+print(f"#defends : {res}")
+print(f"#admissibles : {admissibles(g)}")
