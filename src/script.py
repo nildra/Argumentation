@@ -8,6 +8,8 @@ import sys
 from graphe import Graphe
 from complete import *
 from stable import *
+from skep import *
+from credul import *
 
 def read_file(name):
     liste_arg=[]
@@ -34,3 +36,33 @@ for e in g.arguments:
         res.append(defends(e, g))
 print(f"#defends : {res}")
 print(f"#admissibles : {admissibles(g)}")
+stable =stable(g)
+print(f"#stable : {stable}")
+print(f"#skep de stable: {skeptical(stable,g.arguments)}")
+print(f"#cred de stable: {credul(stable,g.arguments)}")
+
+#test fonction VE_ST verifiy if is stable
+sol_non_stable={'D','B'}
+print(f"#test VE_ST : {VE_ST(g,sol_non_stable)}")
+
+#test fonction DC_ST is arg is in cred(stable)
+arg='D'
+print(f"#test DC_ST : {DC_ST(g,arg)}")
+
+#test fonction DS_ST is arg in all stable
+print(f"#test DS_ST : {DS_ST(g,arg)}")
+
+
+
+
+##  A TESTER  LORSQUE COMPLETE SERA FINIS ##
+#test fonction VE_CO verifiy if is stable
+sol_non_stable={'D','B'}
+print(f"#test VE_CO : {VE_CO(g,sol_non_stable)}")
+
+#test fonction DC_CO is arg is in cred(stable)
+arg='D'
+print(f"#test DC_CO : {DC_CO(g,arg)}")
+
+#test fonction DS_CO is arg in all stable
+print(f"#test DS_CO : {DS_CO(g,arg)}")

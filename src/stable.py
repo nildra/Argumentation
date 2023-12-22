@@ -4,6 +4,8 @@
 from graphe import Graphe
 from complete import *
 
+
+# verify the second part of the definition of a stable extension : the extension attack all arguments if they are not in the extension 
 def is_stable(S,g:Graphe):
     attaque_all=True
     for aj in g.arguments:
@@ -18,7 +20,9 @@ def is_stable(S,g:Graphe):
                 break
     return attaque_all
 
-    return
+
+# an extension is stable if it is conflict free and attack all arguments they are not in the extension
+# return a list of the stable extension of a graph
 def stable(g: Graphe):
     stable=[]
     conflict_free= conflict_free_subsets(g)
@@ -28,7 +32,12 @@ def stable(g: Graphe):
 
     return stable
 
-arg =  ['A', 'B', 'C', 'D', 'E'] 
-relation=[('A', 'B'), ('B', 'A'), ('A', 'C'), ('B', 'C'), ('C', 'D'), ('D', 'E'), ('E', 'D')]
-g = Graphe(arg,relation)
-print(stable(g))
+# Verify if a set of arguments is stable
+def VE_ST(g:Graphe,solution):
+    stable_g = stable(g)
+    response = False
+    for sol in stable_g:
+        if (sol==solution):
+            response=True
+    return response
+
