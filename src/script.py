@@ -11,6 +11,7 @@ from stable import *
 from skep import *
 from credul import *
 
+''' Returns the list of all arguments and the list of attacks between arguments according to a file given in parameter '''
 def read_file(name):
     liste_arg=[]
     liste_att=[]
@@ -36,6 +37,7 @@ for e in g.arguments:
         res.append(defends(e, g))
 print(f"#defends : {res}")
 print(f"#admissibles : {admissibles(g)}")
+
 stable =stable(g)
 print(f"#stable : {stable}")
 print(f"#skep de stable: {skeptical(stable,g.arguments)}")

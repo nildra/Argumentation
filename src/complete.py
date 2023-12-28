@@ -27,9 +27,23 @@ from graphe import Graphe
 # g = Graphe(arg,relation)
 # print(grounded(g))
 
-def complete(g: Graphe) : 
-    # for x, y in g.atk:
-    return
+def complete(g: Graphe):
+    admissible_sets = admissibles(g)
+    complete_extensions = []
+
+    for candidate in admissible_sets:
+        # Un ensemble est considéré comme complet s'il n'existe pas d'ensemble admissible qui le contient strictement.
+        is_maximal = not any(candidate.issubset(other) and candidate != other for other in admissible_sets)
+        if is_maximal:
+            complete_extensions.append(candidate)
+
+    # Ajouter l'ensemble vide si c'est une extension complète
+    if all(not any((defender, attacker) in g.atk for defender in set()) for _, attacker in g.atk):
+        complete_extensions.append(set())
+
+    return complete_extensions
+
+
 
 ''' Returns the list of all argument subsets without conflicts '''
 def conflict_free_subsets(g: Graphe):
@@ -43,7 +57,7 @@ def conflict_free_subsets(g: Graphe):
                 if (arg1, arg2) in g.atk or (arg2, arg1) in g.atk:
                     return False
         return True
-    
+
     ''' Returns the list of all possible subsets of arguments '''
     def generate_subsets(args):
         if not args:
@@ -54,39 +68,40 @@ def conflict_free_subsets(g: Graphe):
     all_subsets = generate_subsets(list(g.arguments))
     return [set(subset) for subset in all_subsets if is_conflict_free(subset)]
 
+''' Returns the list of all the admissible arguments subsets in the Graphe g '''
 def admissibles(g: Graphe):
-    # prend un arg et ens atk et donne ceux qu'il défend. Puis verifier que ceux qu'il defend fait parti d'un des ens ss conflit
-    list_admissibles=[]
-    for e in g.arguments:
-        x, y = defends(e, g)
-        if len(y) == 0:  # Si y est vide on continue
-            continue
-        else: 
-            
+    conflict_free = conflict_free_subsets(g)
+    admissible_sets = []
 
+    for subset in conflict_free:
+        is_admissible = True
+        for arg in subset:
+            # Vérifier si l'argument est attaqué par un argument extérieur au sous-ensemble
+            for attacker in [a for a, b in g.atk if b == arg]:
+                # Si l'attaquant n'est pas dans le sous-ensemble, vérifier si un défenseur dans le sous-ensemble peut contrer l'attaque
+                if attacker not in subset and not any((defender, attacker) in g.atk for defender in subset):
+                    is_admissible = False
+                    break
 
-            list_admissibles.append(list((x, y)))
+        if is_admissible:
+            admissible_sets.append(subset)
 
-    return list_admissibles
+    return admissible_sets
+
 
 ''' Returns the list of all the arguments attacked by arg in the Graphe g '''
 def attacks(arg, g:Graphe):
-    res = []
-    for x, y in g.atk:
-        if x==arg :
-            res += y
-    return res
+    return [y for x, y in g.atk if x == arg]
 
 ''' Returns the list of all the arguments defended by arg in the Graphe g '''
 def defends(arg, g: Graphe):
-    res=[]
+    defended = []
     for x, y in g.atk:
-        if x==arg :
-        #verifier si x==y ou deja pris en compte ?
+        if x == arg:
             for x2, y2 in g.atk:
-                if y==x2 and y2!=x and y2 not in attacks(arg, g):
-                    res += y2
-    return (arg, res)
+                if y == x2 and y2 != x and y2 not in attacks(arg, g):
+                    defended.append(y2)
+    return (arg, defended)
     
    
 

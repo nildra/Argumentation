@@ -4,8 +4,8 @@
 
 class Graphe:
     def __init__(self, arguments, atk):
-        self.arguments=arguments
-        self.atk=atk
+        self.__arguments=arguments
+        self.__atk=atk
 
     def __get_arguments(self):
         return self.__arguments
