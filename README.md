@@ -1,3 +1,4 @@
-# Abstract Argumentation Solver
+Abstract Argumentation Solver
+=============================
 
-- commande pr exec : `python3 script.py fichierTest.apx`
+> Run the software from the **src/** directory: `python3 script.py -p XX-YY -f FILE -a ARGS`
