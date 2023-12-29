@@ -11,11 +11,11 @@ from stable import *
 from skep import *
 from credul import *
 
-''' Returns the list of all arguments and the list of attacks between arguments according to a file given in parameter '''
-def read_file(name):
+''' Returns the list of all arguments and the list of attacks between arguments according to a file 'af_file' given in parameter '''
+def read_file(af_file):
     liste_arg=[]
     liste_att=[]
-    with open (name,"r") as my_file:
+    with open (af_file,"r") as my_file:
         lines = my_file.readlines()
         for l in lines :
             if (l.startswith("arg(")):
@@ -24,11 +24,11 @@ def read_file(name):
                 liste_att.append((l[4], l[6]))       
         return liste_arg, liste_att
 
-arguments, atk = read_file(os.path.join(os.getcwd(), "..", "dossier_test", sys.argv[4]))
+arguments, atk = read_file(os.path.join(os.getcwd(), "..", "dossier_test", sys.argv[4])) #TODO: prendre que argv[4] pr rendu final
 
 g = Graphe(arguments,atk)
 
-''' Calls the corresponding function based on the command parameters '''
+''' Calls the corresponding function based on the command arguments '''
 def arg_switch(value, arguments):
     match value:
         case "VE-CO":

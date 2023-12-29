@@ -2,7 +2,7 @@ from graphe import Graphe
 from stable import *
 from complete import complete
 
-
+''' Returns the list of the skeptically accepted arguments '''
 def skeptical(solutions,arguments):
     result=[]
     for arg in arguments:
@@ -10,7 +10,7 @@ def skeptical(solutions,arguments):
             result.append(arg)
     return result
 
-#Verify if an argument is skepticaly accepted in stable extension
+''' Returns True if an argument 'arg' is skeptically accepted in a stable extension, else False '''
 def DS_ST(g: Graphe,arg):
     response = False
     stable_g=stable(g)
@@ -20,7 +20,7 @@ def DS_ST(g: Graphe,arg):
             response = True
     return response
 
-#Verify if an argument is skepticaly accepted in complete extension
+''' Returns True if an argument 'arg' is skeptically accepted in a complete extension, else False '''
 def DS_CO(g: Graphe,arg):
     response = False
     complete_g=complete(g)

@@ -122,7 +122,7 @@ def defends(arg, g: Graphe):
 # }
 
 
-# Verify if a set of arguments is complete
+''' Returns True if a set of arguments 'solution' is complete '''
 def VE_CO(g:Graphe,solution):
     complete_g = complete(g)
     response = False
