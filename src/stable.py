@@ -33,12 +33,13 @@ def is_stable(S,g:Graphe):
                 break
     return attaque_all
 
-''' Returns True if a set of arguments 'solution' is stable '''
+''' Returns True if a set of arguments 'solution' is stable 
+    Sorts the set given in parameter and the complete subsets to simplify comparison
+'''
 def VE_ST(g:Graphe,solution):
-    stable_g = stable(g)
-    response = False
-    for sol in stable_g:
-        if (sol==solution):
-            response=True
-    return response
+    tab_sol = sorted(solution.split(","))
+    for sol in stable(g):
+        if (sorted(sol) == tab_sol):
+            return True
+    return False
 

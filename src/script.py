@@ -46,7 +46,7 @@ def arg_switch(value, arguments):
         case _:
             return None
         
-return_value =  arg_switch(sys.argv[2],  sys.argv[6])
+return_value =  arg_switch(sys.argv[2],  sys.argv[6].upper())
 
 if return_value:
     print("YES")
@@ -55,6 +55,8 @@ elif return_value == False:
 else: 
     print("Error: unexpected argument")
     
+print(f"#admissibles : {admissibles(g)}")
+print(f"#completees : {complete(g)}")
 
 
 

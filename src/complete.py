@@ -122,11 +122,12 @@ def defends(arg, g: Graphe):
 # }
 
 
-''' Returns True if a set of arguments 'solution' is complete '''
+''' Returns True if a set of arguments 'solution' is complete 
+    Sorts the set given in parameter and the complete subsets to simplify comparison
+'''
 def VE_CO(g:Graphe,solution):
-    complete_g = complete(g)
-    response = False
-    for sol in complete_g:
-        if (sol==solution):
-            response=True
-    return response
+    tab_sol = sorted(solution.split(","))
+    for sol in complete(g):
+        if (sorted(sol) == tab_sol):
+            return True
+    return False
