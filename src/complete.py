@@ -4,47 +4,6 @@
 
 from graphe import Graphe
 
-# def grounded(graphe: Graphe):
-#     liste = graphe.arguments
-#     for arg in graphe.arguments:
-#         for (_, x2) in graphe.relations:
-#             if (arg == x2) and (arg in liste):
-#                     liste.remove(arg)
-#     liste_rouge=[]
-#     for arg in liste:
-#         for(x1,x3) in graphe.relations:
-#             if(x1==arg) and (x3 not in liste_rouge):
-#                 liste_rouge.append(x3)
-#     for arg in liste_rouge:
-#         for (x1, x2) in graphe.relations :
-#             if (arg == x1):
-#                     liste.append(x2)
-
-#     return liste
-# arg =  ['A', 'B', 'C', 'D', 'E'] 
-# relation=[('A', 'B'), ('B', 'A'), ('A', 'C'), ('B', 'C'), ('C', 'D'), ('D', 'E')]
-
-# g = Graphe(arg,relation)
-# print(grounded(g))
-
-def complete(g: Graphe):
-    admissible_sets = admissibles(g)
-    complete_extensions = []
-
-    for candidate in admissible_sets:
-        # Un ensemble est considéré comme complet s'il n'existe pas d'ensemble admissible qui le contient strictement.
-        is_maximal = not any(candidate.issubset(other) and candidate != other for other in admissible_sets)
-        if is_maximal:
-            complete_extensions.append(candidate)
-
-    # Ajouter l'ensemble vide si c'est une extension complète
-    if all(not any((defender, attacker) in g.atk for defender in set()) for _, attacker in g.atk):
-        complete_extensions.append(set())
-
-    return complete_extensions
-
-
-
 ''' Returns the list of all argument subsets without conflicts '''
 def conflict_free_subsets(g: Graphe):
 
@@ -66,7 +25,7 @@ def conflict_free_subsets(g: Graphe):
         return subsets + [[args[0]] + subset for subset in subsets]
 
     all_subsets = generate_subsets(list(g.arguments))
-    return [set(subset) for subset in all_subsets if is_conflict_free(subset)]
+    return [list(subset) for subset in all_subsets if is_conflict_free(subset)]
 
 ''' Returns the list of all the admissible arguments subsets in the Graphe g '''
 def admissibles(g: Graphe):
@@ -76,9 +35,7 @@ def admissibles(g: Graphe):
     for subset in conflict_free:
         is_admissible = True
         for arg in subset:
-            # Vérifier si l'argument est attaqué par un argument extérieur au sous-ensemble
             for attacker in [a for a, b in g.atk if b == arg]:
-                # Si l'attaquant n'est pas dans le sous-ensemble, vérifier si un défenseur dans le sous-ensemble peut contrer l'attaque
                 if attacker not in subset and not any((defender, attacker) in g.atk for defender in subset):
                     is_admissible = False
                     break
@@ -88,38 +45,51 @@ def admissibles(g: Graphe):
 
     return admissible_sets
 
-
-''' Returns the list of all the arguments attacked by arg in the Graphe g '''
-def attacks(arg, g:Graphe):
-    return [y for x, y in g.atk if x == arg]
-
-''' Returns the list of all the arguments defended by arg in the Graphe g '''
-def defends(arg, g: Graphe):
-    defended = []
+''' Returns a list of arguments that are attacked by the subset given as a parameter '''
+def arguments_attacked_by_subset(g: Graphe, subset):
+    attacked = set()
     for x, y in g.atk:
-        if x == arg:
-            for x2, y2 in g.atk:
-                if y == x2 and y2 != x and y2 not in attacks(arg, g):
-                    defended.append(y2)
-    return (arg, defended)
-    
-   
+        if x in subset:
+            attacked.add(y)
+    return list(attacked)
 
-# public void findCombinaison(int i, int k, Set<ArrayList<Argument>> combinaison, ArrayList<Argument> listeArgument){
-#     Argument[]tabArgument= argumentToTab();
-#     if (tabArgument.length == 0 || k > tabArgument.length) {
-#         return;
-#     }
-#     if (k == 0) {
-#         combinaison.add(new ArrayList<>(listeArgument));
-#         return;
-#     }
-#     for (int j = i; j < tabArgument.length; j++) {
-#         listeArgument.add(tabArgument[j]);
-#         findCombinaison(j + 1, k - 1, combinaison, listeArgument);
-#         listeArgument.remove(listeArgument.size() - 1);
-#     }
-# }
+''' Returns a list of arguments that attack the subset given in the parameter '''
+def attackers_of_the_subset(g: Graphe, subset):
+    attackers = set()
+    for x, y in g.atk:
+        if y in subset and x not in subset:
+            attackers.add(x)
+    return list(attackers)
+
+''' Returns True if a subset of arguments given in parameter is a complete extension, else returns False '''
+def is_complete(g: Graphe, subset):
+    attacked = arguments_attacked_by_subset(g, subset)  
+    '''Returns True if all the arguments that subset defends are part of subset.'''
+    def check_internal_defense(subset):
+        res = []
+        for arg in g.arguments:
+            attackers = attackers_of_the_subset(g, arg)
+            if set(attackers).issubset(attacked) : 
+                res.append(arg)
+        if set(res).issubset(subset) :
+            return True
+        return False
+    ''' Returns True if the subset defends all its members against external attacks.'''
+    def verify_inclusion_defense(subset):
+        for arg in subset: 
+            attackers= attackers_of_the_subset(g, arg) 
+            if not set(attackers).issubset(attacked) :
+                return False
+        return True
+    return check_internal_defense(subset) and verify_inclusion_defense(subset)
+
+''' Generates the list of complete subsets ''' 
+def complete(g: Graphe):
+    complet = []
+    for subet in admissibles(g): 
+        if is_complete(g, subet): 
+            complet.append(subet)
+    return complet
 
 
 ''' Returns True if a set of arguments 'solution' is complete 
@@ -128,6 +98,8 @@ def defends(arg, g: Graphe):
 def VE_CO(g:Graphe,solution):
     tab_sol = sorted(solution.split(","))
     for sol in complete(g):
+        if tab_sol[0] == '[]' and len(sol) == 0 : #if the empty set '[]' is given in command line parameter
+            return True 
         if (sorted(sol) == tab_sol):
             return True
     return False

@@ -39,6 +39,8 @@ def is_stable(S,g:Graphe):
 def VE_ST(g:Graphe,solution):
     tab_sol = sorted(solution.split(","))
     for sol in stable(g):
+        if tab_sol[0] == '[]' and len(sol) == 0 : #if the empty set '[]' is given in command line parameter
+            return True 
         if (sorted(sol) == tab_sol):
             return True
     return False
